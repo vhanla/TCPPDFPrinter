@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{47EC8ABE-4774-4C83-8B7C-176C1AB8187E}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="virtualprinter.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="pdfprintersvc.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="virtualprinter">
+        <MSBuild Projects="virtualprinter.dproj"/>
+    </Target>
+    <Target Name="virtualprinter:Clean">
+        <MSBuild Projects="virtualprinter.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="virtualprinter:Make">
+        <MSBuild Projects="virtualprinter.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="pdfprintersvc">
+        <MSBuild Projects="pdfprintersvc.dproj"/>
+    </Target>
+    <Target Name="pdfprintersvc:Clean">
+        <MSBuild Projects="pdfprintersvc.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="pdfprintersvc:Make">
+        <MSBuild Projects="pdfprintersvc.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="virtualprinter;pdfprintersvc"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="virtualprinter:Clean;pdfprintersvc:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="virtualprinter:Make;pdfprintersvc:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
