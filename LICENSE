@@ -1,0 +1,22 @@
+Dual License: Affero General Public License (AGPL) for Ghostscript-dependent code and MIT License for other parts
+
+AGPL License (for Ghostscript-dependent code):
+- This project includes components that are dependent on Ghostscript, which is licensed under the Affero General Public License (AGPL), version 3.0 or any later version. These components are also subject to the terms and conditions of the AGPL.
+
+- You must adhere to the AGPL License terms when using or modifying the Ghostscript-dependent parts of this project. Any distribution or modification of these components must comply with the AGPL.
+
+MIT License (for other parts):
+- You may choose to use the non-Ghostscript-dependent parts of this project under the MIT License by following the terms below:
+
+MIT License (as provided by vhanla):
+- Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+- This MIT License applies only to the portions of the code explicitly marked as such and that do not depend on Ghostscript.
+
+Note:
+- If you choose the MIT License, you are not authorized to use or distribute the Ghostscript-dependent components of this project. You must replace those components with suitable alternatives.
+
+Author:
+- This project is authored by vhanla.
