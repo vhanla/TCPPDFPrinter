@@ -6,7 +6,22 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.SvcMgr, Vcl.Dialogs,
   Vcl.ExtCtrls, Winapi.TlHelp32, Winapi.ShellAPI, Win.Registry, Winapi.WinSvc, Winapi.PsAPI;
 
+const
+  WTS_CURRENT_SERVER_HANDLE = 0;
+
 type
+  WTS_CONNECTSTATE_CLASS = (
+    WTSActive,              // User logged on and fully active
+    WTSConnected,           // User logged on but disconnected
+    WTSConnectQuery,        // Trying to connect
+    WTSShadow,              // Shadowing another user's session
+    WTSDisconnected,        // User logged on but disconnected
+    WTSIdle,                // User logged on but idle
+    WTSListen,              // Waiting for a connection
+    WTSReset,               // Session is being reset
+    WTSDown,                // Session is down due to an error
+    WTSInit);               // Session is in the process of being initialized
+
   TService1 = class(TService)
     procedure ServiceStart(Sender: TService; var Started: Boolean);
     procedure ServiceStop(Sender: TService; var Stopped: Boolean);
@@ -15,6 +30,8 @@ type
   private
     { Private declarations }
     FStatusHandle: SERVICE_STATUS_HANDLE;
+    FNotificationHandle: HWND;
+    procedure WndProc(var Msg: TMessage);
   public
     function GetServiceController: TServiceController; override;
     { Public declarations }
@@ -23,6 +40,8 @@ type
 var
   Service1: TService1;
 
+function WTSQuerySessionInformation(hServer: THandle; SessionId: DWORD;
+  WTSInfoClass: DWORD; var pBuffer: Pointer; var BytesReturned: DWORD): Boolean; stdcall; external 'wtsapi32.dll';
 function WTSQueryUserToken(SessionId: Cardinal; phToken: PHandle): LONGBOOL; stdcall;
   external 'wtsapi32.dll';
 function CreateEnvironmentBlock(var lpEnvironment: PVoid; hToken: THANDLE;
@@ -35,6 +54,25 @@ implementation
 
 {$R *.dfm}
 
+function IsDefaultShellExplorer: Boolean;
+var
+  Registry: TRegistry;
+begin
+  Registry := TRegistry.Create;
+  try
+    Registry.RootKey := HKEY_LOCAL_MACHINE;
+    if Registry.OpenKey('\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', False) then
+    begin
+      Result := (UpperCase(Registry.ReadString('Shell')) = 'EXPLORER.EXE');
+      Registry.CloseKey;
+    end
+    else
+      Result := False; // Unable to read the registry key
+  finally
+    Registry.Free;
+  end;
+end;
+
 function IsProgramRunningForCurrentUser(const ProgramPath: string): Boolean;
 var
   SnapProcHandle: THandle;
@@ -46,6 +84,16 @@ var
   exeName: string;
 begin
   Result := False;
+
+
+  // let's also check the taskbar availability as
+  if IsDefaultShellExplorer then
+  begin
+    Result := FindWindow('Shell_TrayWnd', nil) <> 0;
+    // if the default shell is explorer.exe we should wait for the taskbar to be available
+    if not Result then
+      Exit;
+  end;
 
   CurrentSessionID := WTSGetActiveConsoleSessionId;
 
@@ -280,12 +328,61 @@ end;
 procedure TService1.ServiceStart(Sender: TService; var Started: Boolean);
 begin
   Started := True;
+  FNotificationHandle := AllocateHWnd(WndProc);
+  if not WTSRegisterSessionNotification(FNotificationHandle, NOTIFY_FOR_ALL_SESSIONS) then
+  begin
+
+  end;
+
 end;
 
 procedure TService1.ServiceStop(Sender: TService; var Stopped: Boolean);
 begin
+  WTSUnRegisterSessionNotification(FNotificationHandle);
   Stopped := True;
 end;
 
+
+procedure TService1.WndProc(var Msg: TMessage);
+begin
+  case Msg.Msg of
+    WM_WTSSESSION_CHANGE:
+    begin
+      case Msg.WParam of
+        WTS_SESSION_LOGON:
+          begin
+            // Handle session logon event
+            //if WTSQuerySessionInformation(WTS_CURRENT_SERVER_HANDLE, Msg.LParam, wtscon) then
+
+          end;
+        WTS_SESSION_LOGOFF:
+          begin
+            // Handle session logoff event
+          end;
+
+        WTS_REMOTE_CONNECT:
+          begin
+            // Handle remote connect event
+          end;
+        WTS_REMOTE_DISCONNECT:
+          begin
+            // Handle remote disconnect event
+          end;
+
+        WTS_CONSOLE_CONNECT:
+          begin
+            // Handle console connect event
+          end;
+
+        WTS_CONSOLE_DISCONNECT:
+          begin
+            // Handle console disconnect event
+          end;
+
+      end;
+    end;
+
+  end;
+end;
 
 end.
