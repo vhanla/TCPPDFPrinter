@@ -24,6 +24,7 @@ type
     ShowPDFPrinter1: TMenuItem;
     N1: TMenuItem;
     Exit1: TMenuItem;
+    CheckBox1: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure IdTCPServer1Execute(AContext: TIdContext);
@@ -116,6 +117,7 @@ end;
 procedure TmainForm.btnAddPrinterClick(Sender: TObject);
 begin
   AddPrinter('Print to PDF', '127.0.0.1', 9001, 'PRINT2PDFPORT');
+  btnAddPrinter.Visible := False;
 end;
 
 function TmainForm.CheckGhostScriptOEMDriver: Boolean;

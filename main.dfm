@@ -20,15 +20,29 @@ object mainForm: TmainForm
     Width = 628
     Height = 65
     Align = alTop
-    Caption = 'GhostScript'
+    Caption = 'Document Title'
     TabOrder = 0
-    ExplicitWidth = 624
+    ExplicitLeft = -8
+    ExplicitTop = -6
+    DesignSize = (
+      628
+      65)
     object Label1: TLabel
       Left = 24
       Top = 32
-      Width = 34
+      Width = 3
       Height = 15
-      Caption = 'Label1'
+    end
+    object CheckBox1: TCheckBox
+      Left = 352
+      Top = 3
+      Width = 305
+      Height = 17
+      Anchors = [akTop, akRight]
+      Caption = 'Open PDF after creation with default PDF viewer'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
     end
   end
   object Memo1: TMemo
@@ -43,8 +57,8 @@ object mainForm: TmainForm
     ExplicitHeight = 376
   end
   object btnAddPrinter: TButton
-    Left = 64
-    Top = 391
+    Left = 0
+    Top = 79
     Width = 75
     Height = 25
     Caption = 'AddPrinter'
